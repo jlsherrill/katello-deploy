@@ -73,11 +73,11 @@ EOL
 }
 
 @test "wait 60 seconds" {
-  sleep 60
+  sleep 160
 }
 
 @test "check web app is up" {
-  curl -sk "https://localhost$URL_PREFIX/users/login" | grep -q login-form
+  curl -k "https://localhost$URL_PREFIX/users/login" 2> /var/log/foreman/curl.log | grep -q login-form
 }
 
 @test "install CLI (hammer)" {
