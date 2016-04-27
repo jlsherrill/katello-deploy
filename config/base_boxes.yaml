@@ -7,6 +7,18 @@ shells:
     shell: '/vagrant/shells/runcible.sh'
 
 boxes:
+  satellite_base:
+    box_name: 'satellite'
+    default: true
+    pty: true
+    libvirt: '/foo/bar'
+
+  capsule_base:
+    box_name: 'capsule'
+    default: true
+    pty: true
+    libvirt: '/foo/bar'
+
   centos6:
     box_name:   'centos6'
     image_name: !ruby/regexp '/CentOS 6.*PV/'
