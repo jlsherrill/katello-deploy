@@ -1,7 +1,4 @@
 ---
-- name: 'Set SELinux to Permissive'
-  selinux: policy=targeted state=permissive
-
 - name: 'Get Server Hostname'
   shell: hostname -f
   delegate_to: "{{ capsule_server }}"
@@ -48,7 +45,8 @@
     dest: ~/
 
 - name: 'Install Capsule Installer RPM'
-  yum: name=foreman-installer-katello
+  yum:
+    name: foreman-installer-katello
   when: custom_install == False
 
 - name: 'Run Install'

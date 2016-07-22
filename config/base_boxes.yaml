@@ -23,6 +23,11 @@ boxes:
     virtualbox: 'http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-7.1_chef-provisionerless.box'
     libvirt:    'https://download.gluster.org/pub/gluster/purpleidea/vagrant/centos-7.1/centos-7.1.box'
 
+  centos7-atomic:
+    box_name: centos7-atomic
+    pty: true
+    libvirt: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-Vagrant-Libvirt.box
+
   centos6-foreman-nightly:
     box: centos6
     <<: *install_shell
@@ -71,3 +76,19 @@ boxes:
     box: centos7
     <<: *runcible_shell
     privileged: false
+
+  pipeline-katello-centos7:
+    box: centos7
+    memory: 4680
+
+  pipeline-capsule-centos7:
+    box: centos7
+    memory: 3072
+
+  pipeline-katello-3.1-centos7:
+    box: centos7
+    memory: 4680
+
+  pipeline-capsule-3.1-centos7:
+    box: centos7
+    memory: 3072
