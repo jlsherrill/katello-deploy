@@ -103,27 +103,31 @@ module Forklift
     def setup_katello_koji_repos(os, version = 'nightly')
       katello = Forklift::RepoFile.new(
         :name => 'katello_koji',
-        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/katello/el#{os}/x86_64/",
-        :priority => 1
+        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/katello/el#{os}/x86_64/"
       )
 
       client = Forklift::RepoFile.new(
         :name => 'katello_client_koji',
-        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/client/el#{os}/x86_64/",
-        :priority => 1
+        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/client/el#{os}/x86_64/"
       )
 
       pulp = Forklift::RepoFile.new(
         :name => 'pulp_koji',
-        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/pulp/el#{os}/x86_64/",
-        :priority => 1
+        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/pulp/el#{os}/x86_64/"
       )
 
       candlepin = Forklift::RepoFile.new(
         :name => 'candlepin_koji',
-        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/candlepin/el#{os}/x86_64/",
-        :priority => 1
+        :baseurl => "http://koji.katello.org/releases/yum/katello-#{version}/candlepin/el#{os}/x86_64/"
       )
+
+      if os == '6'
+        qpid = Forklift::RepoFile.new(
+          :name => 'qpid-copr',
+          :baseurl => "https://copr-be.cloud.fedoraproject.org/results/@qpid/qpid/epel-6-x86_64/"
+        )
+        qpid.deploy
+      end
 
       katello.deploy
       client.deploy

@@ -13,6 +13,7 @@
   become: yes
   vars:
     katello_version: 3.1
+    foreman_version: 1.12
     katello_foreman_version: 1.12
     katello_repositories_use_koji: true
   roles:

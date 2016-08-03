@@ -9,7 +9,13 @@
     name: katello-koji
     description: "Katello {{ katello_version }} Koji Repository"
     baseurl: "http://koji.katello.org/releases/yum/katello-{{ katello_version }}/katello/el{{ release }}/x86_64/"
-    priority: 1
+    gpgcheck: 0
+
+- name: 'Katello Koji Client repository'
+  yum_repository:
+    name: katello-client-koji
+    description: "Katello {{ katello_version }} Client Koji Repository"
+    baseurl: "http://koji.katello.org/releases/yum/katello-{{ katello_version }}/client/el{{ release }}/x86_64/"
     gpgcheck: 0
 
 - name: 'Candlepin Koji repository'
@@ -17,7 +23,6 @@
     name: candlepin-koji
     description: "Candlepin {{ katello_version }} Koji Repository"
     baseurl: "http://koji.katello.org/releases/yum/katello-{{ katello_version }}/candlepin/el{{ release }}/x86_64/"
-    priority: 1
     gpgcheck: 0
 
 - name: 'Pulp Koji repository'
@@ -25,5 +30,4 @@
     name: pulp-koji
     description: "Pulp {{ katello_version }} Koji Repository"
     baseurl: "http://koji.katello.org/releases/yum/katello-{{ katello_version }}/pulp/el{{ release }}/x86_64/"
-    priority: 1
     gpgcheck: 0
