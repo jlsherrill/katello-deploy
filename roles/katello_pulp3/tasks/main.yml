@@ -1,0 +1,100 @@
+---
+- name: create static dir
+  file:
+    path: '/var/lib/pulp/static/'
+    state: directory
+    mode: '777'
+
+- include_role:
+    name: "{{ item }}"
+  with_items:
+    - pulp-database
+    - pulp-workers
+    - pulp-resource-manager
+    - pulp-content
+  vars:
+    pulp_content_host: "{{ ansible_fqdn }}"
+    pulp_default_admin_password: password
+    pulp_requirements_dir: "https://raw.githubusercontent.com/pulp/pulpcore/master/"
+    pulp_plugin_source_dir: "git+https://github.com/pulp/pulpcore-plugin.git#egg=pulpcore-plugin"
+    pulp_source_dir: "git+https://github.com/pulp/pulpcore.git#egg=pulpcore"
+    pulp_install_plugins:
+      pulp-file:
+        app_label: "file"
+        source_dir: "git+https://github.com/pulp/pulp_file.git#egg=pulp-file"
+      pulp-docker:
+        app_label: "docker"
+        source_dir: "git+https://github.com/pulp/pulp_docker.git#egg=pulp-docker"
+      pulp-ansible:
+        app_label: "ansible"
+        source_dir: "git+https://github.com/pulp/pulp_ansible.git#egg=pulp-ansible"
+
+    pulp_secret_key: "unsafe_default"
+    pulp_db_type: postgres
+    pulp_user: pulp
+    pulp_install_dir: /usr/local/lib/pulp
+
+- name: correct published permissions
+  file:
+    path: '/var/lib/pulp/published/'
+    state: directory
+    owner: pulp
+    group: apache
+
+- name: create artifact dir
+  file:
+    path: '/var/lib/pulp/artifact'
+    state: directory
+    owner: pulp
+    group: pulp
+
+- name: Deploy reverse proxy configuration
+  template:
+    src: templates/pulp-reverse-proxy.conf.j2
+    dest: /etc/httpd/conf.d/05-foreman-ssl.d/pulp-reverse-proxy.conf
+    owner: apache
+    group: apache
+
+- name: Delete old pulp_iso config
+  file:
+    path: '/etc/httpd/conf.d/pulp_iso.conf'
+    state: absent
+
+- name: Deploy pulp_file.conf for http
+  template:
+    src: templates/pulp_file.conf.j2
+    dest: /etc/httpd/conf.d/pulp_file.conf
+    owner: apache
+    group: apache
+
+- name: Deploy pulp_file.conf for https
+  template:
+    src: templates/pulp_file.conf.j2
+    dest: /etc/httpd/conf.d/05-foreman-ssl.d/pulp_file.conf
+    owner: apache
+    group: apache
+
+- name: Allow /etc/pulp to be readable by 2 and 3
+  file:
+    path: /etc/pulp/
+    state: directory
+    owner: apache
+    group: pulp
+
+
+- name: Configure smart proxy pulp3
+  template:
+    src: templates/pulp3.yml
+    dest: /etc/foreman-proxy/settings.d/pulp3.yml
+
+- name: restart foreman-proxy
+  service:
+    name: foreman-proxy
+    state: restarted
+
+- name: restart httpd
+  service:
+    name: httpd
+    state: restarted
+
+- name: refresh smart_proxy
